@@ -1,22 +1,14 @@
 import streamlit as st
 import pandas as pd
-
-# 📂**1.Import & Load Dataset**🧩
-
-# **a. Import dataset**
-# df = pd.read_csv('telkomsel.csv')
-
-# # **b. Lima baris awal dari dataset**
-# st.markdown("### Lima Baris Awal dari Dataset")
-# st.write(df.head())
-
 import os
-import streamlit as st
 
+# Path ke file dataset
 file_path = 'dataset.csv'
+
+# Memeriksa apakah file ada
 if os.path.exists(file_path):
     st.write("File ditemukan!")
     df = pd.read_csv(file_path)
-    st.write(df.head())
+    st.write(df.head())  # Tampilkan lima baris pertama dari dataset
 else:
     st.error(f"File {file_path} tidak ditemukan.")
