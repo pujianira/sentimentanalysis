@@ -103,23 +103,19 @@ st.write("**Jumlah Sentimen**")
 st.dataframe(sentiment_counts)
 
 # Membuat visualisasi distribusi sentimen
-fig, ax = plt.subplots()
-sns.barplot(
-    x=sentiment_counts.index, 
-    y=sentiment_counts.values, 
-    hue=sentiment_counts.index,
-    palette={'positif': 'green', 'negatif': 'red', 'netral': 'gray'},
-    legend=False,
-    ax=ax
-)
+# Buat figure
+fig, ax = plt.subplots(figsize=(6, 4))  # Tambahkan ini
 
-ax.set_title('Distribusi Sentimen')
-ax.set_xlabel('Sentimen')
-ax.set_ylabel('Jumlah')
+sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values,
+            hue=sentiment_counts.index,
+            palette={'positif': 'green', 'negatif': 'red', 'netral': 'gray'},
+            legend=False)
 
-# Menampilkan plot di Streamlit
+#plt.title('Distribusi Sentimen')
+plt.xlabel('Sentimen')
+plt.ylabel('Jumlah')
+
 st.pyplot(fig)
-
 
 import streamlit as st
 import nltk
