@@ -211,24 +211,24 @@ class TextPreprocessor:
 preprocessor = TextPreprocessor()
 
 # Upload file CSV
-st.markdown("# 📝 Preprocessing Teks")
-uploaded_file = st.file_uploader("Unggah file CSV", type="csv")
+# st.markdown("# 📝 Preprocessing Teks")
+# uploaded_file = st.file_uploader("Unggah file CSV", type="csv")
 
-if uploaded_file is not None:
-    df_tweet = pd.read_csv(uploaded_file)
+# if uploaded_file is not None:
+#     df_tweet = pd.read_csv(uploaded_file)
 
-    if 'full_text' in df_tweet.columns:
-        # Salin dataframe dan lakukan preprocessing
-        df_clean = df_tweet.copy()
-        df_clean['clean_text'] = df_clean['full_text'].apply(preprocessor.preprocess_text)
+if 'full_text' in df_tweet.columns:
+    # Salin dataframe dan lakukan preprocessing
+    df_clean = df_tweet.copy()
+    df_clean['clean_text'] = df_clean['full_text'].apply(preprocessor.preprocess_text)
 
-        # Tampilkan hasil
-        st.write("### 📜 Data Sebelum & Sesudah Preprocessing")
-        st.dataframe(df_clean[['full_text', 'clean_text']].head(10))
+    # Tampilkan hasil
+    st.write("### 📜 Data Sebelum & Sesudah Preprocessing")
+    st.dataframe(df_clean[['full_text', 'clean_text']].head(10))
 
-        # Unduh hasil preprocessing
-        csv = df_clean.to_csv(index=False).encode('utf-8')
-        st.download_button(label="📥 Unduh Hasil", data=csv, file_name="cleaned_text.csv", mime="text/csv")
+    # Unduh hasil preprocessing
+    csv = df_clean.to_csv(index=False).encode('utf-8')
+    st.download_button(label="📥 Unduh Hasil", data=csv, file_name="cleaned_text.csv", mime="text/csv")
 
-    else:
-        st.error("Kolom 'full_text' tidak ditemukan dalam dataset!")
+else:
+    st.error("Kolom 'full_text' tidak ditemukan dalam dataset!")
