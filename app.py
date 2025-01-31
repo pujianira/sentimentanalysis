@@ -1,15 +1,11 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 
-@st.cache_data
-def load_data():
-    try:
-        df = pd.read_csv('telkomsel.csv')
-        return df
-    except FileNotFoundError:
-        st.error("File 'dataset.csv' tidak ditemukan. Pastikan file ada di direktori yang benar.")
-        return None
+# Memuat file CSV
+df = pd.read_csv('telkomsel.csv')
 
-data = load_data()
-if data is not None:
-    st.write(data)
+# Menampilkan dataset di Streamlit
+st.write("Dataset:", df)
+
+# Atau menampilkan dataset dalam bentuk tabel interaktif
+st.dataframe(df)
