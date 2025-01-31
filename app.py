@@ -90,7 +90,7 @@ def classify_sentiment(text):
 df_tweet['sentiment'] = df_tweet['full_text'].apply(classify_sentiment)
 
 # Menampilkan hasil analisis sentimen
-st.markdown("**e. Hasil Sentimen**")
+st.markdown("**a. Hasil Sentimen**")
 st.dataframe(df_tweet)
 
 st.markdown("# 📊 Distribusi Sentimen")
@@ -99,11 +99,11 @@ st.markdown("# 📊 Distribusi Sentimen")
 sentiment_counts = df_tweet['sentiment'].value_counts()
 
 # Menampilkan tabel jumlah sentimen
-st.write("**Jumlah Sentimen**")
+st.write("**b. Jumlah Sentimen**")
 st.dataframe(sentiment_counts)
 
 # Membuat visualisasi distribusi sentimen
-# Buat figure
+st.write("**c. Visualisasi Distribusi Sentimen**")
 fig, ax = plt.subplots(figsize=(6, 4))  # Tambahkan ini
 
 sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values,
@@ -117,6 +117,8 @@ plt.ylabel('Jumlah')
 
 st.pyplot(fig)
 
+
+st.markdown("# 📂**3. Pre-Processing**🧩")
 import streamlit as st
 import nltk
 import pandas as pd
