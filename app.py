@@ -140,7 +140,7 @@ with st.spinner("Mengunduh resource NLTK..."):
     try:
         nltk.data.find('tokenizers/punkt.zip')
     except LookupError:
-        nltk.download('punkt_tab', quiet=True)
+        nltk.download('punkt', quiet=True)
 
     try:
         nltk.data.find('corpora/wordnet.zip')
@@ -212,14 +212,14 @@ class TextPreprocessor:
         return ' '.join(filtered_words)
 
     def preprocess_text(self, text):
-        """ Membersihkan teks: hapus URL, emoji, tanda baca, stopwords, tokenisasi, lemmatization """
+        if text is None or text.strip() == "":
+            return ""
         text = text.lower()
         text = self.remove_url(text)
         text = self.remove_emoji(text)
         text = self.remove_punctuation(text)
         text = self.remove_stopwords(text)
 
-        # Tokenize dan lemmatize
         try:
             tokens = word_tokenize(text)
         except LookupError:
@@ -241,7 +241,6 @@ preprocessor = TextPreprocessor()
 
 # Pastikan dataframe memiliki kolom 'full_text'
 if 'full_text' in df_tweet.columns:
-    # Salin dataframe dan lakukan preprocessing
     df_clean = df_tweet.copy()
     df_clean['clean_text'] = df_clean['full_text'].apply(preprocessor.preprocess_text)
 
