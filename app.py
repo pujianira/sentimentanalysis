@@ -89,3 +89,30 @@ df_tweet['sentiment'] = df_tweet['full_text'].apply(classify_sentiment)
 # Menampilkan hasil analisis sentimen
 st.markdown("**e. Hasil Sentimen**")
 st.dataframe(df_tweet)
+
+st.markdown("# 📊 Distribusi Sentimen")
+
+# Menghitung jumlah masing-masing sentimen
+sentiment_counts = df_tweet['sentiment'].value_counts()
+
+# Menampilkan tabel jumlah sentimen
+st.write("**Jumlah Sentimen**")
+st.dataframe(sentiment_counts)
+
+# Membuat visualisasi distribusi sentimen
+fig, ax = plt.subplots()
+sns.barplot(
+    x=sentiment_counts.index, 
+    y=sentiment_counts.values, 
+    hue=sentiment_counts.index,
+    palette={'positif': 'green', 'negatif': 'red', 'netral': 'gray'},
+    legend=False,
+    ax=ax
+)
+
+ax.set_title('Distribusi Sentimen')
+ax.set_xlabel('Sentimen')
+ax.set_ylabel('Jumlah')
+
+# Menampilkan plot di Streamlit
+st.pyplot(fig)
