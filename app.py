@@ -104,16 +104,18 @@ st.dataframe(sentiment_counts)
 
 # Membuat visualisasi distribusi sentimen
 st.write("**c. Visualisasi Distribusi Sentimen**")
-fig, ax = plt.subplots(figsize=(6, 4))  # Tambahkan ini
+fig, ax = plt.subplots(figsize=(6, 4))
 
-sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values,
-            hue=sentiment_counts.index,
-            palette={'positif': 'green', 'negatif': 'red', 'netral': 'gray'},
-            legend=False)
+# Pastikan sentiment_counts adalah Series atau dictionary dengan label sentimen yang benar
+sentiment_colors = {'positif': 'green', 'negatif': 'red', 'netral': 'gray'}
 
-#plt.title('Distribusi Sentimen')
+# Gunakan metode plot dengan warna yang sesuai
+sentiment_counts.plot(kind='bar', ax=ax, color=[sentiment_colors.get(x, 'blue') for x in sentiment_counts.index])
+
 plt.xlabel('Sentimen')
 plt.ylabel('Jumlah')
+plt.title('Distribusi Sentimen')
+plt.tight_layout()  # Tambahkan ini untuk menghindari pemotongan label
 
 st.pyplot(fig)
 
