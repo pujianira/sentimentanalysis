@@ -1,15 +1,15 @@
-import os
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
-file_path = 'dataset.csv'
+@st.cache_data
+def load_data():
+    try:
+        df = pd.read_csv('dataset.csv')
+        return df
+    except FileNotFoundError:
+        st.error("File 'dataset.csv' tidak ditemukan. Pastikan file ada di direktori yang benar.")
+        return None
 
-# Debugging dengan print
-print(f"Checking if file exists: {os.path.exists(file_path)}")
-st.write(f"Path to file: {file_path}")
-
-if os.path.exists(file_path):
-    df = pd.read_csv(file_path)
-    st.write(df.head())
-else:
-    st.error(f"File {file_path} tidak ditemukan.")
+data = load_data()
+if data is not None:
+    st.write(data)
