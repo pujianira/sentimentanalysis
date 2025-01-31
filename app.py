@@ -122,26 +122,43 @@ st.pyplot(fig)
 
 st.markdown("# 📂**3. Pre-Processing**🧩")
 import streamlit as st
-import nltk
 import pandas as pd
-import string
+import nltk
 import re
+import string
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-# Download NLTK resources
+# Download NLTK resources jika belum tersedia
 with st.spinner("Mengunduh resource NLTK..."):
-    nltk.download('stopwords', quiet=True)
-    nltk.download('punkt', quiet=True)
-    nltk.download('wordnet', quiet=True)
+    try:
+        nltk.data.find('corpora/stopwords.zip')
+    except LookupError:
+        nltk.download('stopwords', quiet=True)
+    
+    try:
+        nltk.data.find('tokenizers/punkt.zip')
+    except LookupError:
+        nltk.download('punkt', quiet=True)
 
+    try:
+        nltk.data.find('corpora/wordnet.zip')
+    except LookupError:
+        nltk.download('wordnet', quiet=True)
+
+# Class untuk preprocessing teks
 class TextPreprocessor:
     def __init__(self):
         self.lemmatizer = WordNetLemmatizer()
 
         # Stopwords bawaan dari NLTK (Bahasa Indonesia)
-        self.stopwords_id = set(stopwords.words('indonesian'))
+        try:
+            self.stopwords_id = set(stopwords.words('indonesian'))
+        except LookupError:
+            nltk.download('stopwords')
+            self.stopwords_id = set(stopwords.words('indonesian'))
+
         self.stopwords_id.update([
             'yg', 'dgn', 'nya', 'utk', 'ke', 'di', 'dr', 'dan', 'atau',
             'ini', 'itu', 'juga', 'sudah', 'saya', 'anda', 'dia', 'mereka',
@@ -203,20 +220,26 @@ class TextPreprocessor:
         text = self.remove_stopwords(text)
 
         # Tokenize dan lemmatize
-        tokens = word_tokenize(text)
+        try:
+            tokens = word_tokenize(text)
+        except LookupError:
+            nltk.download('punkt')
+            tokens = word_tokenize(text)
+
         tokens = [self.lemmatizer.lemmatize(word) for word in tokens if word.isalpha()]
         return ' '.join(tokens)
 
 # Inisialisasi Preprocessor
 preprocessor = TextPreprocessor()
 
-# Upload file CSV
-# st.markdown("# 📝 Preprocessing Teks")
-# uploaded_file = st.file_uploader("Unggah file CSV", type="csv")
+# Load dataset
+# df_tweet = pd.DataFrame({
+#     'full_text': ["Saya sangat senang menggunakan produk ini!", 
+#                   "Pelayanan sangat buruk. Saya kecewa!", 
+#                   "Tolong bantu saya dengan pesanan saya."]
+# })
 
-# if uploaded_file is not None:
-#     df_tweet = pd.read_csv(uploaded_file)
-
+# Pastikan dataframe memiliki kolom 'full_text'
 if 'full_text' in df_tweet.columns:
     # Salin dataframe dan lakukan preprocessing
     df_clean = df_tweet.copy()
@@ -232,3 +255,4 @@ if 'full_text' in df_tweet.columns:
 
 else:
     st.error("Kolom 'full_text' tidak ditemukan dalam dataset!")
+    st.write("Kolom yang ada:", df_tweet.columns)
