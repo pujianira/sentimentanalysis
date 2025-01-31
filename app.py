@@ -13,7 +13,7 @@ import pandas as pd
 import os
 import streamlit as st
 
-file_path = 'telkomsel.csv'
+file_path = 'dataset.csv'
 if os.path.exists(file_path):
     st.write("File ditemukan!")
     df = pd.read_csv(file_path)
