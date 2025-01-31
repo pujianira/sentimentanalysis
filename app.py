@@ -102,26 +102,22 @@ sentiment_counts = df_tweet['sentiment'].value_counts()
 st.write("**b. Jumlah Sentimen**")
 st.dataframe(sentiment_counts)
 
-# Tambahkan error handling
-try:
-    st.write("**c. Visualisasi Distribusi Sentimen**")
-    fig, ax = plt.subplots(figsize=(8, 5))
-    
-    sns.barplot(x=sentiment_counts.index, 
-                y=sentiment_counts.values, 
-                palette={'positif': 'green', 'negatif': 'red', 'netral': 'gray'})
-    
-    plt.xlabel('Sentimen')
-    plt.ylabel('Jumlah')
-    plt.title('Distribusi Sentimen')
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    
-    st.pyplot(fig)
-    plt.close(fig)
+# # Membuat visualisasi distribusi sentimen
+# st.write("**c. Visualisasi Distribusi Sentimen**")
+# fig, ax = plt.subplots(figsize=(6, 4))
 
-except Exception as e:
-    st.error(f"Terjadi error: {e}")
+# # Pastikan sentiment_counts adalah Series atau dictionary dengan label sentimen yang benar
+# sentiment_colors = {'positif': 'green', 'negatif': 'red', 'netral': 'gray'}
+
+# # Gunakan metode plot dengan warna yang sesuai
+# sentiment_counts.plot(kind='bar', ax=ax, color=[sentiment_colors.get(x, 'blue') for x in sentiment_counts.index])
+
+# plt.xlabel('Sentimen')
+# plt.ylabel('Jumlah')
+# plt.title('Distribusi Sentimen')
+# plt.tight_layout()  # Tambahkan ini untuk menghindari pemotongan label
+
+# st.pyplot(fig)
 
 
 st.markdown("# 📂**3. Pre-Processing**🧩")
