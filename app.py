@@ -4,7 +4,7 @@ import streamlit as st
 @st.cache_data
 def load_data():
     try:
-        df = pd.read_csv('dataset.csv')
+        df = pd.read_csv('telkomsel.csv')
         return df
     except FileNotFoundError:
         st.error("File 'dataset.csv' tidak ditemukan. Pastikan file ada di direktori yang benar.")
