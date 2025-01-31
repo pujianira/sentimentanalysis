@@ -104,20 +104,24 @@ st.dataframe(sentiment_counts)
 
 # Membuat visualisasi distribusi sentimen
 st.write("**c. Visualisasi Distribusi Sentimen**")
-fig, ax = plt.subplots(figsize=(6, 4))
+fig, ax = plt.subplots(figsize=(8, 5))  # Sedikit perbesar ukuran
 
-# Pastikan sentiment_counts adalah Series atau dictionary dengan label sentimen yang benar
 sentiment_colors = {'positif': 'green', 'negatif': 'red', 'netral': 'gray'}
 
-# Gunakan metode plot dengan warna yang sesuai
-sentiment_counts.plot(kind='bar', ax=ax, color=[sentiment_colors.get(x, 'blue') for x in sentiment_counts.index])
+# Gunakan metode bar dengan kontrol warna yang lebih eksplisit
+sentiment_counts.plot(kind='bar', 
+                      ax=ax, 
+                      color=[sentiment_colors.get(x, 'blue') for x in sentiment_counts.index],
+                      edgecolor='black')  # Tambahkan border pada bar
 
-plt.xlabel('Sentimen')
-plt.ylabel('Jumlah')
-plt.title('Distribusi Sentimen')
-plt.tight_layout()  # Tambahkan ini untuk menghindari pemotongan label
+plt.xlabel('Sentimen', fontweight='bold')
+plt.ylabel('Jumlah', fontweight='bold')
+plt.title('Distribusi Sentimen', fontweight='bold')
+plt.xticks(rotation=45)  # Putar label agar lebih jelas
+plt.tight_layout()
 
 st.pyplot(fig)
+plt.close(fig)  # Tutup figure untuk mencegah memory leak
 
 
 st.markdown("# 📂**3. Pre-Processing**🧩")
