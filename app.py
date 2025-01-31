@@ -140,7 +140,7 @@ with st.spinner("Mengunduh resource NLTK..."):
     try:
         nltk.data.find('tokenizers/punkt.zip')
     except LookupError:
-        nltk.download('punkt', quiet=True)
+        nltk.download('punkt_tab', quiet=True)
 
     try:
         nltk.data.find('corpora/wordnet.zip')
