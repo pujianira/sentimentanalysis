@@ -119,3 +119,116 @@ ax.set_ylabel('Jumlah')
 
 # Menampilkan plot di Streamlit
 st.pyplot(fig)
+
+
+import streamlit as st
+import nltk
+import pandas as pd
+import string
+import re
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+
+# Download NLTK resources
+with st.spinner("Mengunduh resource NLTK..."):
+    nltk.download('stopwords', quiet=True)
+    nltk.download('punkt', quiet=True)
+    nltk.download('wordnet', quiet=True)
+
+class TextPreprocessor:
+    def __init__(self):
+        self.lemmatizer = WordNetLemmatizer()
+
+        # Stopwords bawaan dari NLTK (Bahasa Indonesia)
+        self.stopwords_id = set(stopwords.words('indonesian'))
+        self.stopwords_id.update([
+            'yg', 'dgn', 'nya', 'utk', 'ke', 'di', 'dr', 'dan', 'atau',
+            'ini', 'itu', 'juga', 'sudah', 'saya', 'anda', 'dia', 'mereka',
+            'kita', 'akan', 'bisa', 'ada', 'tidak', 'saat', 'oleh', 'setelah',
+            'pada', 'seperti', 'dll', 'dear', 'admin', 'cs', 'customer',
+            'service', 'mohon', 'tolong', 'bantu', 'bantuan', 'terima', 'kasih',
+            'maaf', 'sorry', 'pls', 'please', 'help', 'thanks', 'tq', 'thx',
+            'via', 'adalah', 'yang', 'dari', 'dalam', 'untuk', 'dengan', 'se',
+            'bagi', 'telah', 'serta', 'agar', 'udah', 'kak', 'min', 'aci',
+            'makasih', 'mytelkomselnya', 'versi', 'dibantu', 'silakan', 'maafin',
+            'kalo', 'halo', 'hai'
+        ])
+
+        # Noise words (kata tidak penting)
+        self.noise_words = {
+            'kak', 'ya', 'yg', 'gitu', 'gimana', 'nih', 'dong', 'sih', 'kan', 'aja',
+            'banget', 'bgt', 'udah', 'lagi', 'deh', 'kok', 'tau', 'gak', 'ga',
+            'nih', 'tuh', 'yg', 'yah', 'lho', 'dng', 'bwt', 'dm', 'nomor', 'cek', 'yuk'
+        }
+
+        # Gabungkan semua kata yang dihapus
+        self.all_stopwords = self.stopwords_id | self.noise_words
+
+        # Tabel untuk menghapus tanda baca
+        self.punctuation_table = str.maketrans('', '', string.punctuation)
+
+    def remove_url(self, text):
+        return re.sub(r'https?://\S+|www\.\S+', '', text)
+
+    def remove_emoji(self, text):
+        emoji_pattern = re.compile("["u"\U0001F600-\U0001F64F"
+                                   u"\U0001F300-\U0001F5FF"
+                                   u"\U0001F680-\U0001F6FF"
+                                   u"\U0001F700-\U0001F77F"
+                                   u"\U0001F780-\U0001F7FF"
+                                   u"\U0001F800-\U0001F8FF"
+                                   u"\U0001F900-\U0001F9FF"
+                                   u"\U0001FA00-\U0001FA6F"
+                                   u"\U0001FA70-\U0001FAFF"
+                                   u"\U00002702-\U000027B0"
+                                   u"\U000024C2-\U0001F251"
+                                   "]+", flags=re.UNICODE)
+        return emoji_pattern.sub("", text)
+
+    def remove_punctuation(self, text):
+        return text.translate(self.punctuation_table)
+
+    def remove_stopwords(self, text):
+        words = text.split()
+        filtered_words = [word for word in words if word not in self.all_stopwords]
+        return ' '.join(filtered_words)
+
+    def preprocess_text(self, text):
+        """ Membersihkan teks: hapus URL, emoji, tanda baca, stopwords, tokenisasi, lemmatization """
+        text = text.lower()
+        text = self.remove_url(text)
+        text = self.remove_emoji(text)
+        text = self.remove_punctuation(text)
+        text = self.remove_stopwords(text)
+
+        # Tokenize dan lemmatize
+        tokens = word_tokenize(text)
+        tokens = [self.lemmatizer.lemmatize(word) for word in tokens if word.isalpha()]
+        return ' '.join(tokens)
+
+# Inisialisasi Preprocessor
+preprocessor = TextPreprocessor()
+
+# Upload file CSV
+st.markdown("# 📝 Preprocessing Teks")
+uploaded_file = st.file_uploader("Unggah file CSV", type="csv")
+
+if uploaded_file is not None:
+    df_tweet = pd.read_csv(uploaded_file)
+
+    if 'full_text' in df_tweet.columns:
+        # Salin dataframe dan lakukan preprocessing
+        df_clean = df_tweet.copy()
+        df_clean['clean_text'] = df_clean['full_text'].apply(preprocessor.preprocess_text)
+
+        # Tampilkan hasil
+        st.write("### 📜 Data Sebelum & Sesudah Preprocessing")
+        st.dataframe(df_clean[['full_text', 'clean_text']].head(10))
+
+        # Unduh hasil preprocessing
+        csv = df_clean.to_csv(index=False).encode('utf-8')
+        st.download_button(label="📥 Unduh Hasil", data=csv, file_name="cleaned_text.csv", mime="text/csv")
+
+    else:
+        st.error("Kolom 'full_text' tidak ditemukan dalam dataset!")
